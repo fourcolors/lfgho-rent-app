@@ -1,9 +1,51 @@
-# [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/) + [SIWE](https://login.xyz/) + ConnectKit Example
+# Setup Guide
 
-This is a simple example of how to implement ConnectKit with [Next.js](https://nextjs.org/) and [SIWE](https://docs.family.co/connectkit/authentication) in TypeScript. This example is based on the [SIWE with Next.js documentation](https://docs.family.co/connectkit/auth-with-nextjs) provided by Family.
+## Prerequisites
 
-## Running the example
+Before you begin, ensure you have met the following requirements:
 
-- Have a look at the [instructions in the main README](https://github.com/family/connectkit/blob/main/README.md#running-examples-locally)
-- Please copy the `.env.example` file to `.env.local` and fill in the values
-- You'll want to set up an environment variable called `SESSION_SECRET` — a randomly generated, strong password of at least 32 characters
+- You have installed Node.js and npm. You can download them from [here](https://nodejs.org/en/download/).
+- You have installed Yarn. You can download it from [here](https://yarnpkg.com/getting-started/install).
+- You have a basic understanding of React and TypeScript.
+
+## Setting up the project
+
+To setup the project, follow these steps:
+
+1. Clone the repository:
+
+  ```sh
+  git clone https://github.com/fourcolors/lfgho-rent-app
+  ```
+
+2. Navigate to the project directory:
+
+  ```sh
+  cd <project_directory>
+  ```
+
+3. Install the dependencies:
+
+  ```sh
+  yarn install
+  ```
+
+4. Copy the `.env.example` file to a new file named `.env.local`:
+
+  ```sh
+  cp .env.example .env.local
+  ```
+
+5. Open `.env.local` and replace the placeholders with your actual values:
+
+  - `<your_walletconnect_project_id>`
+  - `<your_alchemy_key>`
+  - `<your_session_secret>`
+
+6. Run the development server:
+
+  ```sh
+  yarn dev
+  ```
+
+  Now, you should be able to see the application running at http://localhost:3000.
