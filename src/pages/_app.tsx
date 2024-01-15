@@ -8,7 +8,7 @@ const config = createConfig(
   getDefaultConfig({
     alchemyId: process.env.NEXT_PUBLIC_ALCHEMY_KEY,
     walletConnectProjectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID!,
-    appName: 'My ConnectKit App',
+    appName: 'RentApp',
   })
 );
 
