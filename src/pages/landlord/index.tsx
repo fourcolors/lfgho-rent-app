@@ -1,4 +1,4 @@
-export function LandlordHome() {
+export default function LandlordHome() {
   return (
     <div className="flex-1 min-h-screen flex-col">
       <h1>Welcome Landlord</h1>
