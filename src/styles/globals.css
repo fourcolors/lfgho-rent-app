@@ -3,12 +3,6 @@
 @tailwind utilities;
 
 
-.strokeText {
-  -webkit-text-stroke: 1px black;
-  text-stroke: 1px black;
-  -webkit-text-fill-color: white;
-  text-fill-color: white;
-}
 
 :root {
   --foreground-rgb: 0, 0, 0;
