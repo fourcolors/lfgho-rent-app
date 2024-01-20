@@ -42,7 +42,7 @@ export default function LandlordHome() {
           </p>
 
           <div className="bg-white bg-opacity-30 p-6 rounded-2xl flex">
-            <div>3 / 4 properties rented</div>
+            <div>1 / 2 properties leased</div>
           </div>
         </div>
         <div>
