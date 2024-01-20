@@ -1,18 +1,14 @@
-import useRootStore from "@/store/root";
+import { useSIWE } from "connectkit";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-export function useProtection(userRole: "landlord" | "renter") {
+export function useProtection() {
   const router = useRouter();
-  const userR = useRootStore((state) => state.userRole);
+  const { isSignedIn } = useSIWE();
 
   useEffect(() => {
-    // Check if the current path includes the user type
-    const isOnUserTypeRoute = router.asPath.includes(`/${userRole}`);
-
-    // Redirect to home page if on a userType route and not a userType
-    if (isOnUserTypeRoute && userR !== userRole) {
+    if (!isSignedIn) {
       router.push("/");
     }
-  }, [router, userR, userRole]);
+  }, [router, isSignedIn]);
 }
