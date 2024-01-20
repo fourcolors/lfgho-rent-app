@@ -6,7 +6,7 @@ interface MainContentProps {
 
 const MainContent = ({ children }: MainContentProps) => {
   return (
-    <div className="flex flex-1 overflow-auto flex-col scroll-m-3 no-scrollbar pb-20">
+    <div className="flex flex-1 overflow-auto flex-col scroll-m-3 no-scrollbar pb-32">
       {children}
     </div>
   );
