@@ -6,6 +6,7 @@ import { usePolling } from "@/hooks/usePolling";
 import { useProtection } from "@/hooks/useProtection";
 import useRootStore from "@/store/root";
 import Image from "next/image";
+import Link from "next/link";
 import { useMemo } from "react";
 import { Property } from "../api/landlord";
 
@@ -54,18 +55,22 @@ export default function LandlordHome() {
             Pending
           </p>
           {pendingProperties.map((property: Property, index: string) => (
-            <div
+            <Link
               key={`property-${index}`}
-              style={{ position: "relative", height: "250px", width: "100%" }}
+              href={`/landlord/property/${property.id}`}
             >
-              <Image
-                className="rounded"
-                alt="house"
-                src="/house.jpeg"
-                layout="fill"
-                objectFit="cover"
-              />
-            </div>
+              <div
+                style={{ position: "relative", height: "250px", width: "100%" }}
+              >
+                <Image
+                  className="rounded"
+                  alt="house"
+                  src="/house.jpeg"
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </div>
+            </Link>
           ))}
         </div>
         <div>
