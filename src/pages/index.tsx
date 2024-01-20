@@ -1,7 +1,7 @@
+"use client";
+
 import { Toggle } from "@/components/Toggle";
-import useProtectedSIWE from "@/hooks/useProtectedSIWE";
-import useRootStore from "@/store/root";
-import { ConnectKitButton } from "connectkit";
+import { ConnectKitButton, useSIWE } from "connectkit";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -20,31 +20,19 @@ function Loading({
 }
 
 export default function Home({ address }: { address?: string }) {
-  const { isLoading, data, isSignedIn, signOut, signIn } = useProtectedSIWE();
-  console.log({ data, isSignedIn, signOut, signIn });
+  const { isLoading, data, isSignedIn, signOut, signIn } = useSIWE();
   const [toggled, setToggled] = useState(false);
   const router = useRouter();
-  const setLandlord = useRootStore((state) => state.setLandlord);
-  const setRenter = useRootStore((state) => state.setRenter);
-
-  // Set useRootStore state when toggle changes and user is logged in
-  useEffect(() => {
-    if (isSignedIn) {
-      router.push("/landlord");
-    }
-  }, [isSignedIn, router]);
 
   useEffect(() => {
     if (isSignedIn) {
       if (toggled) {
-        setRenter;
         router.push("/renter");
       } else {
-        setLandlord;
         router.push("/landlord");
       }
     }
-  }, [toggled, setLandlord, setRenter, isSignedIn, router]);
+  }, [toggled, isSignedIn, router]);
 
   return (
     <div className="flex  items-center justify-center min-h-screen py-2 flex-col text-center">
