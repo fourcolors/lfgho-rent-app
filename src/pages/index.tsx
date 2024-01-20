@@ -1,9 +1,10 @@
 "use client";
 
 import { Toggle } from "@/components/Toggle";
+import useRootStore from "@/store/root";
 import { ConnectKitButton, useSIWE } from "connectkit";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 function Loading({
   children,
@@ -21,18 +22,24 @@ function Loading({
 
 export default function Home({ address }: { address?: string }) {
   const { isLoading, data, isSignedIn, signOut, signIn } = useSIWE();
-  const [toggled, setToggled] = useState(false);
+  const [userRole, setUserRole] = useRootStore((state) => [
+    state.userRole,
+    state.setUserRole,
+  ]);
   const router = useRouter();
+  console.log("userRole", userRole);
 
   useEffect(() => {
     if (isSignedIn) {
-      if (toggled) {
-        router.push("/renter");
+      console.log("what is the userRole navigating", userRole);
+      if (userRole === "renter") {
+        console.log("here");
+        router.push("/renter/requestLease");
       } else {
         router.push("/landlord");
       }
     }
-  }, [toggled, isSignedIn, router]);
+  }, [userRole, isSignedIn]);
 
   return (
     <div className="flex  items-center justify-center min-h-screen py-2 flex-col text-center">
@@ -41,9 +48,14 @@ export default function Home({ address }: { address?: string }) {
           <p className="text-[72px] font-bold drop-shadow-3xl flex text-center">
             RentFi
           </p>
-          <Toggle toggleState={(state) => setToggled(state)} />
-
-          {toggled ? (
+          {!isSignedIn && (
+            <Toggle
+              toggleState={(state) =>
+                setUserRole(state ? "renter" : "landlord")
+              }
+            />
+          )}
+          {userRole === "renter" ? (
             <p className="flex text-sm mt-3 font-bold">Log in as Renter</p>
           ) : (
             <p className="flex text-sm mt-3 font-bold ">Log in as Landlord</p>

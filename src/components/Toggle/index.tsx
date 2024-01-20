@@ -14,7 +14,7 @@ export function Toggle({ toggleState }: ToggleProps) {
 
   useEffect(() => {
     toggleState(toggle);
-  }, [toggle, toggleState]);
+  }, [toggle]);
 
   return (
     <div
