@@ -1,21 +1,28 @@
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 type RootStore = {
   isLoggedIn: boolean;
   userRole: "landlord" | "renter" | null;
   login: () => void;
   logout: () => void;
-  setLandlord: () => void;
-  setRenter: () => void;
+  setUserRole: (role: "landlord" | "renter") => void;
 };
 
-const useRootStore = create<RootStore>((set) => ({
-  isLoggedIn: false,
-  userRole: null,
-  login: () => set({ isLoggedIn: true }),
-  logout: () => set({ isLoggedIn: false }),
-  setLandlord: () => set({ userRole: "landlord" }),
-  setRenter: () => set({ userRole: "renter" }),
-}));
+const useRootStore = create<RootStore>()(
+  persist(
+    (set) => ({
+      isLoggedIn: false,
+      userRole: null,
+      login: () => set({ isLoggedIn: true }),
+      logout: () => set({ isLoggedIn: false }),
+      setUserRole: (role) => set({ userRole: role }),
+    }),
+    {
+      name: "root",
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
 
 export default useRootStore;

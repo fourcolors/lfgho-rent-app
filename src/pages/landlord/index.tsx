@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import MainContent from "@/components/MainContent";
 import { usePolling } from "@/hooks/usePolling";
 import { useProtection } from "@/hooks/useProtection";
+import useRootStore from "@/store/root";
 import Image from "next/image";
 import { useMemo } from "react";
 import { Property } from "../api/landlord";
@@ -15,6 +16,9 @@ export default function LandlordHome() {
     intervalMs: 5000,
   });
 
+  const userRole = useRootStore((state) => state.userRole);
+
+  console.log("userRole", userRole);
   console.log("isLoading", isLoading);
   console.log("isError", isError);
   console.log("data", data);
