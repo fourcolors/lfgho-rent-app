@@ -10,13 +10,11 @@ export default function RequestLease() {
 
   const [request, setRequest] = useState(false);
 
-  const variants = request
-    ? {}
-    : {
-        tap: {
-          scale: 0.9,
-        },
-      };
+  const variants = {
+    tap: {
+      scale: request ? 1 : 0.9,
+    },
+  };
 
   function handleClick() {
     setRequest(true);
