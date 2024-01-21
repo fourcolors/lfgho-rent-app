@@ -1,7 +1,11 @@
 import Footer from "@/components/Footer";
 import MainContent from "@/components/MainContent";
 import { useProtection } from "@/hooks/useProtection";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { motion } from "framer-motion";
 import { useRouter } from "next/router";
+import { useState } from "react";
 const leaseAgreement = `LEASE AGREEMENT
 
 This Lease Agreement (the “Agreement”) is made and entered into this [Date], by and between [Landlord's Full Name] ("Landlord") and [Tenant's Full Name(s)] ("Tenant").
@@ -32,10 +36,49 @@ This Lease Agreement (the “Agreement”) is made and entered into this [Date],
 
 13. Entire Agreement: This Agreement constitutes the entire agreement between the parties and supersedes any prior understanding or representation of any kind preceding the date of this Agreement. There are no other promises, conditions, understandings or other agreements, whether oral or written, relating to the subject matter of this Agreement.`;
 
+type SetupLeaseArgs = {
+  type: "setupLease";
+  payload: {};
+};
+const setupLease = async ({ type, payload }: SetupLeaseArgs) => {
+  const url = "http://localhost:3000/api/createLease";
+  const { data } = await axios.post(url, { type, payload });
+  return data;
+};
+
+const initalButtonText = "Sign and setup";
 function LandlordPropety() {
   const router = useRouter();
+  const [buttonText, setButtonText] = useState(initalButtonText);
+  const [hash, setHash] = useState();
+
+  const { mutate, data, isSuccess } = useMutation({
+    mutationFn: setupLease,
+    onSuccess: (res) => {
+      setHash(res?.hash);
+      setButtonText("Signed");
+      console.log("res", res);
+    },
+  });
+
+  function handleSign() {
+    if (mutate) {
+      mutate({
+        type: "setupLease",
+        payload: {},
+      });
+    }
+    setButtonText("Signing...");
+  }
+
+  const variants = {
+    tap: {
+      scale: 0.9,
+    },
+  };
 
   useProtection();
+
   return (
     <div
       className="flex min-h-screen flex-col px-5 space-y-8 overflow-auto"
@@ -56,9 +99,20 @@ function LandlordPropety() {
           className="overflow-auto w-full h-96 p-4 border border-gray-300 rounded text-black"
         />
 
-        <button className="mt-4 p-2 bg-blue-500 text-white rounded">
-          Sign with wallet
-        </button>
+        <motion.button
+          onClick={handleSign}
+          variants={variants}
+          className="mt-4 p-2 bg-blue-500 text-white rounded data-[siging=true]:bg-green-300"
+          disabled={initalButtonText !== buttonText}
+        >
+          {buttonText}
+        </motion.button>
+        {hash && (
+          <div className="mt-4 p-2 bg-green-300 text-white rounded">
+            Signed, waiting for tenant to finalize the contract
+            <p>Transaction Hash: {hash}</p>
+          </div>
+        )}
       </MainContent>
       <Footer />
     </div>

@@ -11,6 +11,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  console.log("Deploying contract", account.address);
   let hash;
   try {
     hash = await walletClient.deployContract({
