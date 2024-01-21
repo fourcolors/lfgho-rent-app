@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import MainContent from "@/components/MainContent";
+import { usePolling } from "@/hooks/usePolling";
 import { useProtection } from "@/hooks/useProtection";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -24,13 +25,25 @@ const requestLease = async ({ type, payload }: RequestLeaseArgs) => {
 };
 
 export default function RequestLease() {
+  const {
+    isLoading,
+    isError,
+    data: signatureData,
+  } = usePolling({
+    queryKey: ["requestLeaseTenant"],
+    url: "/api/signatures",
+    intervalMs: 5000,
+  });
+
+  console.log("data", signatureData);
+
   useProtection();
 
   const { address } = useAccount();
   const [request, setRequest] = useState(false);
   const [readyToSign, setReadyToSign] = useState(false);
   const router = useRouter();
-  const { mutate, data, isLoading, isSuccess } = useMutation({
+  const { mutate, data, isSuccess } = useMutation({
     mutationFn: requestLease,
     onSuccess: (res) => {
       setRequest(true);
@@ -61,6 +74,10 @@ export default function RequestLease() {
   }
 
   function ActionButton() {
+    if (signatureData?.signatures?.length > 0) {
+      setReadyToSign(true);
+    }
+
     if (request && readyToSign)
       return (
         <motion.button

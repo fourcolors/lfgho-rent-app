@@ -1,15 +1,11 @@
-import leaseAbi from "@/abis/lease";
 import Footer from "@/components/Footer";
 import MainContent from "@/components/MainContent";
 import { useProtection } from "@/hooks/useProtection";
-import { contractAddress } from "@/utils";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 import { useRouter } from "next/router";
-import {
-  Address,
-  useAccount,
-  useContractWrite,
-  usePrepareContractWrite,
-} from "wagmi";
+import { useState } from "react";
+import { useAccount } from "wagmi";
 const leaseAgreement = `LEASE AGREEMENT
 
 This Lease Agreement (the “Agreement”) is made and entered into this [Date], by and between [Landlord's Full Name] ("Landlord") and [Tenant's Full Name(s)] ("Tenant").
@@ -40,49 +36,39 @@ This Lease Agreement (the “Agreement”) is made and entered into this [Date],
 
 13. Entire Agreement: This Agreement constitutes the entire agreement between the parties and supersedes any prior understanding or representation of any kind preceding the date of this Agreement. There are no other promises, conditions, understandings or other agreements, whether oral or written, relating to the subject matter of this Agreement.`;
 
-// Array of arguments to pass to the contract function
-type ContractArguments = [
-  Address, // landlord
-  Address, // tenant
-  bigint, // rentAmount
-  bigint, // dueDate
-  bigint, // lateFee
-  bigint, // securityDeposit
-  bigint, // securityDepositDueDate
-  bigint, // leaseDuration
-  string, // leasingAgreementId
-];
-
+const initalButtonText = "Sign with wallet";
+const finalize = async ({ type, payload }) => {
+  const url = "http://localhost:3000/api/finalize";
+  const { data } = await axios.post(url, { type, payload });
+  return data;
+};
 function RenterProperty() {
   useProtection();
 
+  const [buttonText, setButtonText] = useState(initalButtonText);
+
   const { address } = useAccount();
   const router = useRouter();
-  const landlordAdress = "0xF6EF9cF4740a54f3B01de673CEBE8D77e34015fd";
-  const args: ContractArguments = [
-    landlordAdress,
-    address ?? "0x000",
-    BigInt(500),
-    BigInt(123),
-    BigInt(100),
-    BigInt(1000),
-    BigInt(123),
-    BigInt(365),
-    "42",
-  ];
+  const landlordAdress = "0x905aE7375cda1EcC71C0522b9511e024Dd69c2aB";
 
-  const { config } = usePrepareContractWrite({
-    address: contractAddress,
-    functionName: "finalizeLeasingAgreement",
-    abi: leaseAbi,
-    args,
+  const { mutate, data, isSuccess } = useMutation({
+    mutationFn: finalize,
+    onSuccess: (res) => {
+      setButtonText("Signed");
+      console.log("res", res);
+    },
   });
 
-  const { write, data, isLoading, isSuccess } = useContractWrite(config);
-
   function handleLeaseSetup() {
-    if (write) {
-      write();
+    if (mutate) {
+      mutate({
+        type: "finalize",
+        payload: {
+          landlordAddress: landlordAdress,
+          tenantAddress: address,
+        },
+      });
+      setButtonText("Signing...");
     }
   }
 
@@ -108,11 +94,11 @@ function RenterProperty() {
         />
 
         <button
-          disabled={isLoading}
+          disabled={initalButtonText !== buttonText}
           onClick={handleLeaseSetup}
           className="mt-4 p-2 bg-blue-500 text-white rounded"
         >
-          {isLoading ? "Processing..." : "Sign with wallet"}
+          {buttonText}
         </button>
       </MainContent>
       <Footer />

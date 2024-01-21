@@ -1,4 +1,4 @@
-import { createWalletClient, http } from "viem";
+import { createPublicClient, createWalletClient, http } from "viem";
 import { mnemonicToAccount } from "viem/accounts";
 import { sepolia } from "viem/chains";
 
@@ -8,6 +8,13 @@ export const account = mnemonicToAccount(
 
 export const walletClient = createWalletClient({
   account,
+  chain: sepolia,
+  transport: http(
+    "https://eth-sepolia.g.alchemy.com/v2/gaGMpDrslRDdrzEX64k5EyKWDl2JcMtR"
+  ),
+});
+
+export const publicClient = createPublicClient({
   chain: sepolia,
   transport: http(
     "https://eth-sepolia.g.alchemy.com/v2/gaGMpDrslRDdrzEX64k5EyKWDl2JcMtR"

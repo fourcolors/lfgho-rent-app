@@ -2,6 +2,14 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 export const backendStore = {
   leaseRequests: [],
+  signatures: [],
+  hash: "",
+  addHash: function (hash: string) {
+    this.hash = hash;
+  },
+  addSignature: function (address: string, propertyId: string) {
+    this.signatures.push({ address, propertyId });
+  },
   addRequest: function (request: { address: string; propertyId: number }) {
     this.leaseRequests.push(request);
   },

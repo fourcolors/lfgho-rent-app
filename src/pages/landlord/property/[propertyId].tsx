@@ -6,6 +6,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { useAccount } from "wagmi";
 const leaseAgreement = `LEASE AGREEMENT
 
 This Lease Agreement (the “Agreement”) is made and entered into this [Date], by and between [Landlord's Full Name] ("Landlord") and [Tenant's Full Name(s)] ("Tenant").
@@ -49,6 +50,7 @@ const setupLease = async ({ type, payload }: SetupLeaseArgs) => {
 const initalButtonText = "Sign and setup";
 function LandlordPropety() {
   const router = useRouter();
+  const { address } = useAccount();
   const [buttonText, setButtonText] = useState(initalButtonText);
   const [hash, setHash] = useState();
 
@@ -65,7 +67,10 @@ function LandlordPropety() {
     if (mutate) {
       mutate({
         type: "setupLease",
-        payload: {},
+        payload: {
+          propertyId: "1",
+          landlordAddress: address,
+        },
       });
     }
     setButtonText("Signing...");
