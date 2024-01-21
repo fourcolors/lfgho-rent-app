@@ -45,15 +45,13 @@ export default function LandlordHome() {
           <p className="text-[72px] font-bold drop-shadow-3xl flex text-center">
             Landlord
           </p>
-
-          <div className="bg-white bg-opacity-30 p-6 rounded-2xl flex">
-            <div>1 / 2 properties leased</div>
-          </div>
         </div>
         <div>
-          <p className="text-[42px] font-bold drop-shadow-3xl flex text-center">
-            Pending
-          </p>
+          {pendingProperties.length > 0 && (
+            <p className="text-[42px] font-bold drop-shadow-3xl flex text-center">
+              Pending
+            </p>
+          )}
           {pendingProperties.map((property: Property, index: string) => (
             <Link
               key={`property-${index}`}
@@ -74,9 +72,11 @@ export default function LandlordHome() {
           ))}
         </div>
         <div>
-          <p className="text-[42px] font-bold drop-shadow-3xl flex text-center">
-            Leased
-          </p>
+          {leasedProperties.length > 0 && (
+            <p className="text-[42px] font-bold drop-shadow-3xl flex text-center">
+              Leased
+            </p>
+          )}
 
           {leasedProperties.map((property: Property, index: string) => (
             <div

@@ -1,7 +1,15 @@
+import leaseAbi from "@/abis/lease";
 import Footer from "@/components/Footer";
 import MainContent from "@/components/MainContent";
 import { useProtection } from "@/hooks/useProtection";
+import { contractAddress } from "@/utils";
 import { useRouter } from "next/router";
+import {
+  Address,
+  useAccount,
+  useContractWrite,
+  usePrepareContractWrite,
+} from "wagmi";
 const leaseAgreement = `LEASE AGREEMENT
 
 This Lease Agreement (the “Agreement”) is made and entered into this [Date], by and between [Landlord's Full Name] ("Landlord") and [Tenant's Full Name(s)] ("Tenant").
@@ -32,10 +40,52 @@ This Lease Agreement (the “Agreement”) is made and entered into this [Date],
 
 13. Entire Agreement: This Agreement constitutes the entire agreement between the parties and supersedes any prior understanding or representation of any kind preceding the date of this Agreement. There are no other promises, conditions, understandings or other agreements, whether oral or written, relating to the subject matter of this Agreement.`;
 
-function LandlordPropety() {
-  const router = useRouter();
+// Array of arguments to pass to the contract function
+type ContractArguments = [
+  Address, // landlord
+  Address, // tenant
+  bigint, // rentAmount
+  bigint, // dueDate
+  bigint, // lateFee
+  bigint, // securityDeposit
+  bigint, // securityDepositDueDate
+  bigint, // leaseDuration
+  string, // leasingAgreementId
+];
 
+function RenterProperty() {
   useProtection();
+
+  const { address } = useAccount();
+  const router = useRouter();
+  const landlordAdress = "0xF6EF9cF4740a54f3B01de673CEBE8D77e34015fd";
+  const args: ContractArguments = [
+    landlordAdress,
+    address ?? "0x000",
+    BigInt(500),
+    BigInt(123),
+    BigInt(100),
+    BigInt(1000),
+    BigInt(123),
+    BigInt(365),
+    "42",
+  ];
+
+  const { config } = usePrepareContractWrite({
+    address: contractAddress,
+    functionName: "finalizeLeasingAgreement",
+    abi: leaseAbi,
+    args,
+  });
+
+  const { write, data, isLoading, isSuccess } = useContractWrite(config);
+
+  function handleLeaseSetup() {
+    if (write) {
+      write();
+    }
+  }
+
   return (
     <div
       className="flex min-h-screen flex-col px-5 space-y-8 overflow-auto"
@@ -49,6 +99,7 @@ function LandlordPropety() {
           <p className="text-[72px] font-bold drop-shadow-3xl flex text-center">
             Property
           </p>
+          <p className="mb-3">123 Main St, San Francisco, CA 94105</p>
         </div>
         <textarea
           value={leaseAgreement}
@@ -56,8 +107,12 @@ function LandlordPropety() {
           className="overflow-auto w-full h-96 p-4 border border-gray-300 rounded text-black"
         />
 
-        <button className="mt-4 p-2 bg-blue-500 text-white rounded">
-          Sign with wallet
+        <button
+          disabled={isLoading}
+          onClick={handleLeaseSetup}
+          className="mt-4 p-2 bg-blue-500 text-white rounded"
+        >
+          {isLoading ? "Processing..." : "Sign with wallet"}
         </button>
       </MainContent>
       <Footer />
@@ -65,4 +120,4 @@ function LandlordPropety() {
   );
 }
 
-export default LandlordPropety;
+export default RenterProperty;
